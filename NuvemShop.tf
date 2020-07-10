@@ -59,25 +59,25 @@ resource "aws_key_pair" "NuvemShop" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-resource "aws_s3_bucket" "nuvemshop-alb-logs"{
-  bucket = "nuvemshop-alb-logs"
-  acl    = "log-delivery-write"
+//resource "aws_s3_bucket" "nuvemshop-alb-logs"{
+  //bucket = "nuvemshop-alb-logs"
+  //acl    = "log-delivery-write"
 
-  tags = {
-    Name        = "ALB Logs"
-    Environment = "NuvemShop"
-  }
-}
+  //tags = {
+   // Name        = "ALB Logs"
+    //Environment = "NuvemShop"
+  //}
+//}
 
-resource "aws_s3_bucket" "nuvemshop-alb" {
-  bucket = "nuvemshop-alb-logs"
-  acl    = "log-delivery-write"
+//resource "aws_s3_bucket" "nuvemshop-alb" {
+  //bucket = "nuvemshop-alb-logs"
+  //acl    = "log-delivery-write"
 
-  logging {
-    target_bucket = aws_s3_bucket.nuvemshop-alb-logs.id
-    target_prefix = "NS-ALB_log/"
-  }
-}
+  //logging {
+    //target_bucket = aws_s3_bucket.nuvemshop-alb-logs.id
+    //target_prefix = "NS-ALB_log/"
+  //}
+//}
 
 resource "aws_alb_target_group" "http" {
   name     = "http"
@@ -102,11 +102,11 @@ resource "aws_alb" "NS" {
 
   enable_deletion_protection = true
 
-  access_logs {
-    bucket  = aws_s3_bucket.nuvemshop-alb-logs.bucket
-    prefix  = "NS"
-    enabled = true
-  }
+  //access_logs {
+    //bucket  = aws_s3_bucket.nuvemshop-alb-logs.bucket
+    //prefix  = "NS"
+    //enabled = true
+  //}
   depends_on = [aws_internet_gateway.gw_ns]
 
   tags = {
@@ -137,6 +137,14 @@ resource "aws_security_group" "ec2" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["189.78.214.173/32"]
+  }
+
+  ingress {
+    description = "TCP local"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.31.0.0/16"]
   }
 
   egress {
